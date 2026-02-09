@@ -91,6 +91,7 @@
 | **Security** | GPG signing, Bandit | Artifact signing & vulnerability scanning |
 
 #### 🏛️ Technology Layers Architecture
+<div style="border: 2px solid #CC0000; padding: 10px; background: rgba(255,100,0,0.05); border-radius: 8px;">
 
 ```mermaid
 graph TD
@@ -132,12 +133,15 @@ graph TD
     PODMAN -->|Deploy| COMM
     ANSIBLE -->|Configure| INFRA
     
-    style UI fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
-    style COMM fill:#e0f2f1,stroke:#00897b,stroke-width:2px
-    style FAST fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-    style DEEP fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    style INFRA fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
+    style UI fill:#fff3e0,stroke:#CC0000,stroke-width:3px,color:#333
+    style COMM fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style FAST fill:#fff4cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style DEEP fill:#ffcccc,stroke:#CC0000,stroke-width:3px,color:#333
+    style INFRA fill:#ffddcc,stroke:#CC0000,stroke-width:3px,color:#333
+    linkStyle default stroke:#CC0000,stroke-width:2px
 ```
+<p style="text-align: center; font-size: 12px; color: #CC0000; opacity: 0.6; margin-top: 5px;">⚠️ K.A.O.S. Security Analysis Platform</p>
+</div>
 
 ---
 
@@ -199,6 +203,7 @@ docker-compose up -d
 ## 🏗️ Technical Deep Dive
 
 ### System Architecture
+<div style="border: 2px solid #CC0000; padding: 10px; background: rgba(255,100,0,0.05); border-radius: 8px;">
 
 ```mermaid
 graph TB
@@ -247,12 +252,15 @@ graph TB
     ENV -->|Load| BRAIN
     PROFILES -->|Setup| CONFIG
     
-    style ARM fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
-    style NETWORK fill:#e0f2f1,stroke:#00897b,stroke-width:2px
-    style BRAIN fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style LLM fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    style CONFIG fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
+    style ARM fill:#ffddcc,stroke:#CC0000,stroke-width:3px,color:#333
+    style NETWORK fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style BRAIN fill:#ffcccc,stroke:#CC0000,stroke-width:3px,color:#333
+    style LLM fill:#fff4cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style CONFIG fill:#ffddcc,stroke:#CC0000,stroke-width:3px,color:#333
+    linkStyle default stroke:#CC0000,stroke-width:2px
 ```
+<p style="text-align: center; font-size: 12px; color: #CC0000; opacity: 0.6; margin-top: 5px;">⚠️ K.A.O.S. Microservices Pipeline</p>
+</div>
 
 ### Storage & Persistence
 - **Session Logs:** Mounted volumes for state retention
@@ -260,6 +268,7 @@ graph TB
 - **Artifacts:** GPG-signed releases with SHA256 checksums
 
 #### 🔄 Command Flow & Processing Pipeline
+<div style="border: 2px solid #CC0000; padding: 10px; background: rgba(255,100,0,0.05); border-radius: 8px;">
 
 ```mermaid
 graph TD
@@ -278,16 +287,19 @@ graph TD
     L -->|Save| M["💾 Log"]
     M -->|Show| N["📤 Output"]
     
-    style A fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
-    style B fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
-    style E fill:#e0f2f1,stroke:#00897b,stroke-width:2px
-    style F fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    style G fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-    style J fill:#fce4ec,stroke:#c2185b,stroke-width:2px
-    style I fill:#f1f8e9,stroke:#827717,stroke-width:2px
-    style K fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
-    style N fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style A fill:#ffddcc,stroke:#CC0000,stroke-width:3px,color:#333
+    style B fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style E fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style F fill:#ffcccc,stroke:#CC0000,stroke-width:3px,color:#333
+    style G fill:#fff4cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style J fill:#ffcccc,stroke:#CC0000,stroke-width:3px,color:#333
+    style I fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style K fill:#fff4cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style N fill:#ffddcc,stroke:#CC0000,stroke-width:3px,color:#333
+    linkStyle default stroke:#CC0000,stroke-width:2px
 ```
+<p style="text-align: center; font-size: 12px; color: #CC0000; opacity: 0.6; margin-top: 5px;">⚠️ K.A.O.S. Request Lifecycle</p>
+</div>
 
 ### Security Architecture
 - **Input Validation:** Multi-layer (CLI → Backend → LLM)
@@ -350,6 +362,7 @@ K.A.O.S/
 ### Threat Mitigations
 
 #### ⚠️ Risk Classification System
+<div style="border: 2px solid #CC0000; padding: 10px; background: rgba(255,100,0,0.05); border-radius: 8px;">
 
 ```mermaid
 graph TD
@@ -368,14 +381,17 @@ graph TD
     RESPONSE -->|Log| OUTPUT["📝 Output"] 
     BLOCKED -->|Alert| OUTPUT
     
-    style INPUT fill:#e0e0e0,stroke:#424242,stroke-width:2px
-    style SAFE fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
-    style MEDIUM fill:#fff9c4,stroke:#f57f17,stroke-width:2px
-    style HIGH fill:#ffccbc,stroke:#d84315,stroke-width:2px
-    style CRITICAL fill:#ffcdd2,stroke:#b71c1c,stroke-width:2px
-    style RESPONSE fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
-    style BLOCKED fill:#ffebee,stroke:#b71c1c,stroke-width:2px
+    style INPUT fill:#ffddcc,stroke:#CC0000,stroke-width:3px,color:#333
+    style SAFE fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style MEDIUM fill:#fff4cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style HIGH fill:#ffcccc,stroke:#CC0000,stroke-width:3px,color:#333
+    style CRITICAL fill:#FFB3B3,stroke:#CC0000,stroke-width:3px,color:#333
+    style RESPONSE fill:#ffe8cc,stroke:#CC0000,stroke-width:3px,color:#333
+    style BLOCKED fill:#FFB3B3,stroke:#CC0000,stroke-width:3px,color:#333
+    linkStyle default stroke:#CC0000,stroke-width:2px
 ```
+<p style="text-align: center; font-size: 12px; color: #CC0000; opacity: 0.6; margin-top: 5px;">⚠️ K.A.O.S. Risk Assessment Engine</p>
+</div>
 
 #### 🛡️ Security Mitigations
 
