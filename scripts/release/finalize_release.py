@@ -156,7 +156,7 @@ def phase_4_artifacts(root_dir: Path):
     """Generates release artifacts."""
     logger.info("📦 PHASE 4: ARTIFACT SHIPMENT PREP")
 
-    generator = root_dir / "tools/artifact_generator.py"
+    generator = root_dir / "scripts" / "artifacts" / "artifact_generator.py"
     if not generator.exists():
         logger.error(f"❌ Generator tool missing: {generator}")
         sys.exit(1)
