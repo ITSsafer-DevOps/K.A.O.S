@@ -12,27 +12,28 @@ The **K.A.O.S. Arm Client** is the secure frontend interface for the K.A.O.S. di
 
 The solution utilizes a rootless container architecture to ensure host security while providing necessary capabilities for security operations.
 
-```text
-+---------------------------------------------------------------+
-|  RHEL WORKSTATION (Host)                                      |
-|                                                               |
-|  +---------------------------------------------------------+  |
-|  |  Podman Rootless Namespace (User Scope)                 |  |
-|  |                                                         |  |
-|  |  +-----------------------+    HTTP/JSON    +---------+  |  |
-|  |  |  [Container: kali-ai] | <-------------> |  BRAIN  |  |  |
-|  |  |  -------------------  |                 | BACKEND |  |  |
-|  |  |  • Python Agent       |                 +---------+  |  |
-|  |  |  • Security Tools     |                              |  |
-|  |  |  • ZSH Interface      |                              |  |
-|  |  +----------+------------+                              |  |
-|  |             |                                           |  |
-|  +-------------|-------------------------------------------+  |
-|                | Volume Mount (:Z)                            |
-|      +---------v----------+                                   |
-|      |  /opt/arm (Host)   |                                   |
-|      +--------------------+                                   |
-+---------------------------------------------------------------+
+```mermaid
+graph TB
+    subgraph "🖥️ RHEL Workstation (Host)"
+        A["🔒 Security Boundary"]
+        subgraph "🐳 Podman Rootless<br/>User Namespace"
+            B["🛡️ kali-ai Container<br/>Rootless Mode"]
+            C["🐍 Python Agent<br/>🔧 Security Tools<br/>🖥️ ZSH Interface"]
+        end
+        D["📁 /opt/arm<br/>Volume Mount :Z"]
+    end
+    subgraph "🧠 Backend Network"
+        E["🌐 BRAIN Backend<br/>Flask/Gunicorn"]
+    end
+    B --> C
+    C --> E
+    B --> D
+    C -->|HTTP/JSON| E
+    style A fill:#262626,stroke:#c41c3b,color:#fff,stroke-width:3px
+    style B fill:#e74c3c,stroke:#262626,color:#fff
+    style C fill:#c41c3b,stroke:#262626,color:#fff
+    style D fill:#d35400,stroke:#262626,color:#fff
+    style E fill:#2980b9,stroke:#262626,color:#fff
 ```
 
 ## 3. Prerequisites

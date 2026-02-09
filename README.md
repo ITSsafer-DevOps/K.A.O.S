@@ -8,6 +8,38 @@ Hybrid Offensive AI Framework for Enterprise Linux Environments.
 
 ## Technical Architecture
 
+```mermaid
+graph TB
+    subgraph "🏢 Enterprise Layer"
+        A["🛡️ Ansible<br/>Orchestration"]
+    end
+    subgraph "🧠 AI/ML Layer"
+        B["⚡ Gunicorn/Gevent<br/>Backend"]
+        C["🔄 Hybrid Engine<br/>Fast-Path + LLM"]
+    end
+    subgraph "💾 Persistence & State"
+        D["📁 Symlink<br/>Config Mgmt"]
+        E["🔐 State<br/>Retention"]
+    end
+    subgraph "🔍 Intelligence Tiers"
+        F["⚙️ Heuristic<br/>Fast-Path"]
+        G["🧬 Deep Learning<br/>Analysis"]
+    end
+    A --> B
+    B --> C
+    C --> F
+    C --> G
+    B --> D
+    D --> E
+    style A fill:#c41c3b,stroke:#262626,color:#fff
+    style B fill:#e74c3c,stroke:#262626,color:#fff
+    style C fill:#e74c3c,stroke:#262626,color:#fff
+    style D fill:#d35400,stroke:#262626,color:#fff
+    style E fill:#d35400,stroke:#262626,color:#fff
+    style F fill:#27ae60,stroke:#262626,color:#fff
+    style G fill:#3498db,stroke:#262626,color:#fff
+```
+
 ### High-Performance Backend (Gunicorn/Gevent)
 Engineered for high-concurrency environments, the backend utilizes Gunicorn with Gevent workers to ensure non-blocking I/O operations, critical for real-time AI processing.
 

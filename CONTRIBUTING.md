@@ -1,5 +1,23 @@
 ## Contributing to K.A.O.S.
 
+### Red Hat Enterprise DevSecOps Standard
+
+```mermaid
+graph LR
+    A["📝 Pull Request"] --> B["🔍 Code Review<br/>Security Check"]
+    B --> C["✅ CI/CD Pipeline<br/>Lint + Test"]
+    C --> D{"✔️ Approved?"}
+    D -->|Yes| E["🚀 Merge to Main"]
+    D -->|No| F["💬 Request Changes"]
+    F --> A
+    style A fill:#c41c3b,stroke:#262626,color:#fff
+    style B fill:#e74c3c,stroke:#262626,color:#fff
+    style C fill:#27ae60,stroke:#262626,color:#fff
+    style D fill:#f39c12,stroke:#262626,color:#fff
+    style E fill:#27ae60,stroke:#262626,color:#fff
+    style F fill:#e74c3c,stroke:#262626,color:#fff
+```
+
 Thank you for considering contributing to K.A.O.S. We welcome contributions that improve the project, documentation, tests or deployment.
 
 Guidelines
