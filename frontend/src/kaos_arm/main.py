@@ -155,7 +155,7 @@ def main():
             )
 
             # 4. Safety Loop (Human-in-the-Loop / English UI)
-            confirm = input(f"Execute this command? [Y/n]: ").strip().upper()
+            confirm = input("Execute this command? [Y/n]: ").strip().upper()
 
             if confirm == "Y":  # 'Y' stands for 'Yes'
                 # 5. Execution Phase
