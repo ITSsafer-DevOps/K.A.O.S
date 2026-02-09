@@ -1,5 +1,39 @@
 # K.A.O.S. (Ai-Kali-RHEL) - Ubuntu Deployment Edition
 
+
+[![Project in development](https://img.shields.io/badge/status-development-orange)](https://github.com/ITSsafer-DevOps/K.A.O.S)
+
+<p align="center">
+    <a href="https://github.com/ITSsafer-DevOps/K.A.O.S">
+        <img src="https://lh3.googleusercontent.com/a/ACg8ocK3mcl_XLJ0Akz7eC6_csg_ZPirUdT97h2PCj98ntcjJpfE4A6-5EhlvMB4-hFh_ld9ccSD3q_VJRsvnHHP6F3OLC2aSos8=s288-c-no" alt="Project Logo" width="160"/>
+    </a>
+</p>
+
+<p align="center">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Red_Hat_logo.svg/320px-Red_Hat_logo.svg.png" alt="Red Hat" height="40"/>&nbsp;&nbsp;
+    <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" height="40"/>&nbsp;&nbsp;
+    <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" height="40"/>
+</p>
+
+**Note:** This project is under active development.
+
+---
+
+## Technologies Used
+
+- Container runtime: Podman (rootless)
+- OS: Red Hat Enterprise Linux (RHEL 8/9), Ubuntu (for dev/testing)
+- Backend: Flask + Gunicorn + Gevent
+- Serialization: orjson
+- Retry/Resilience: Tenacity
+- NLP/LLM: Ollama / Mistral / Llama
+- CI/CD: GitHub Actions (lint + tests)
+- Deployment: Ansible (atomic deploy, symlink rotation)
+- Languages: Python 3.10+
+- Security: SubUID/SubGID, CAP_NET_RAW (controlled), host-mounted audit volumes
+
+---
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)  [![CI](https://github.com/ITSsafer-DevOps/K.A.O.S/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
 
 Enterprise-grade Offensive AI Framework for RHEL-compatible environments.
