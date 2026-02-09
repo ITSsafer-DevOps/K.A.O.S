@@ -5,21 +5,21 @@
 
 <p align="center">
     <a href="https://github.com/ITSsafer-DevOps/K.A.O.S" title="K.A.O.S. project">
-        <img src="https://lh3.googleusercontent.com/a/ACg8ocL7Y3S3o2vpWe2l74S2i5i7vN3x_VpllvsaQCwwXIKEHyl8WB5WixuZtiPhofQaSMfix7XAb2T1cnYKCwr1b2S7J5bI6s3e=s288-c-no" alt="Project Logo" width="180" style="border-radius:12px;padding:6px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);"/>
+        <img src="docs/logos/project.png" alt="Project Logo" width="180" style="border-radius:12px;padding:6px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);"/>
     </a>
 </p>
 
 <p align="center" style="margin-top:10px;">
     <a href="https://www.redhat.com" title="Red Hat">
-        <img src="https://vectorlogo.zone/logos/redhat/redhat-icon.svg" alt="Red Hat Hat" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+        <img src="docs/logos/redhat.svg" alt="Red Hat Hat" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
     &nbsp;&nbsp;&nbsp;
     <a href="https://www.kali.org" title="Kali Linux">
-        <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+        <img src="docs/logos/kali.svg" alt="Kali Linux" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
     &nbsp;&nbsp;&nbsp;
     <a href="https://ubuntu.com" title="Ubuntu">
-        <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+        <img src="docs/logos/ubuntu.png" alt="Ubuntu" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
 </p>
 
