@@ -73,6 +73,55 @@
 | **Python Version** | 3.10+ | Modern Python with type hints |
 | **Security** | GPG signing, Bandit | Artifact signing & vulnerability scanning |
 
+#### 🏛️ Technology Layers Architecture
+
+```mermaid
+graph TD
+    subgraph UI["🖥️ UI Layer"]
+        TERM["Terminal/CLI"]
+        ANSI["ANSI Formatting"]
+    end
+    
+    subgraph COMM["🌐 Communication Layer"]
+        HTTP["HTTP/REST"]
+        TIMEOUT["Timeouts: 2-10s"]
+        RETRY["Retry Logic: 3x"]
+    end
+    
+    subgraph FAST["⚡ Fast Path Analysis"]
+        REGEX["Regex Patterns"]
+        HEURISTIC["Rule Engine"]
+        INTENT["Intent Mapping"]
+    end
+    
+    subgraph DEEP["🧠 Deep Path Analysis"]
+        OLLAMA["Ollama LLM"]
+        MISTRAL["Mistral Model"]
+        INFERENCE["Inference Engine"]
+    end
+    
+    subgraph INFRA["🏗️ Infrastructure Layer"]
+        PODMAN["Podman/Docker"]
+        ANSIBLE["Ansible"]
+        COMPOSE["Docker Compose"]
+    end
+    
+    UI -->|HTTP Request| COMM
+    COMM -->|Route| FAST
+    COMM -->|Deep Analyze| DEEP
+    FAST -->|Response| COMM
+    DEEP -->|Response| COMM
+    COMM -->|Display| UI
+    PODMAN -->|Deploy| COMM
+    ANSIBLE -->|Configure| INFRA
+    
+    style UI fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
+    style COMM fill:#e0f2f1,stroke:#00897b,stroke-width:2px
+    style FAST fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style DEEP fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style INFRA fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
+```
+
 ---
 
 ## 📊 Quality Metrics
@@ -134,35 +183,94 @@ docker-compose up -d
 
 ### System Architecture
 
-```
-┌─────────────────────────────────────────────────────┐
-│      Frontend (ARM) - Distributed CLI Client       │
-│  - Command Input Processing                        │
-│  - Session Management (/opt/arm/session.log)       │
-│  - Fallback Heuristics (Brain offline mode)        │
-│  - ANSI Terminal Formatting                        │
-└────────────────┬────────────────────────────────────┘
-                 │ HTTP/REST (HTTPS in prod)
-                 │ Timeout: 2s | Retries: 3 attempts
-┌────────────────▼────────────────────────────────────┐
-│      Backend (Brain) - Flask REST API Server       │
-│  ├─ Health Check: /api/v1/health                  │
-│  ├─ Analysis Engine: /api/v1/analyze               │
-│  ├─ Heuristic Analyzer                             │
-│  │  ├─ Regex pattern matching (destructive cmds) │
-│  │  ├─ Risk classification (SAFE/MED/HIGH/CRIT)  │
-│  │  └─ Tool type identification                   │
-│  └─ LLM Query Layer (Ollama)                       │
-│     ├─ Model: Mistral (configurable)              │
-│     ├─ Timeout: 10s                               │
-│     └─ Retry: 3 attempts, 2s delay                │
-└─────────────────────────────────────────────────────┘
+```mermaid
+graph TB
+    subgraph ARM["🖥️ Frontend - ARM (Distributed CLI)"]
+        CLI["Command Input Processing"]
+        SESSION["Session Management"]
+        FALLBACK["Fallback Heuristics"]
+    end
+    
+    subgraph NETWORK["🌐 Network Layer"]
+        HTTP["HTTP/REST API"]
+        SECURE["HTTPS (Production)"]
+        TIMEOUT["Timeout: 2s | Retries: 3x"]
+    end
+    
+    subgraph BRAIN["🧠 Backend - Brain (Flask REST API)"]
+        HEALTH["Health: /api/v1/health"]
+        ANALYZE["Analyze: /api/v1/analyze"]
+        HEURISTIC["Heuristic Engine"]
+        REGEX["Pattern Matching"]
+        CLASSIFY["Risk Classifier"]
+    end
+    
+    subgraph LLM["🤖 LLM Integration"]
+        OLLAMA["Ollama Service"]
+        MISTRAL["Mistral Model"]
+        QUERY["LLM Query (Timeout: 10s)"]
+    end
+    
+    subgraph CONFIG["⚙️ Configuration"]
+        ENV["Environment Settings"]
+        PROFILES["dev/staging/prod"]
+    end
+    
+    CLI -->|User Command| SESSION
+    SESSION -->|HTTP Request| HTTP
+    HTTP -->|Analyze Request| ANALYZE
+    ANALYZE -->|Fast Path| HEURISTIC
+    HEURISTIC -->|Pattern Match| REGEX
+    REGEX -->|Risk Level| CLASSIFY
+    CLASSIFY -->|High Risk| QUERY
+    QUERY -->|LLM Response| MISTRAL
+    MISTRAL -->|Result| HTTP
+    HTTP -->|Display Result| CLI
+    FALLBACK -->|Offline Mode| HEURISTIC
+    ENV -->|Load| BRAIN
+    PROFILES -->|Configure| CONFIG
+    
+    style ARM fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
+    style NETWORK fill:#e0f2f1,stroke:#00897b,stroke-width:2px
+    style BRAIN fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style LLM fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style CONFIG fill:#e8eaf6,stroke:#3f51b5,stroke-width:2px
 ```
 
 ### Storage & Persistence
 - **Session Logs:** Mounted volumes for state retention
 - **Configuration:** Environment-based settings (dev/staging/prod)
 - **Artifacts:** GPG-signed releases with SHA256 checksums
+
+#### 🔄 Command Flow & Processing Pipeline
+
+```mermaid
+graph TD
+    A["📥 User Input"] -->|CLI Interface| B["🖥️ Frontend Processing"]
+    B -->|Validation| C{"Command Valid?"}
+    C -->|No| D["❌ Reject Input"]
+    C -->|Yes| E["🌐 Network Request"]
+    E -->|HTTP POST| F["🧠 Backend Received"]
+    F -->|Pattern Check| G["⚡ Heuristic Analysis"]
+    G -->|Risk Level| H{"Risk Assessment"}
+    H -->|SAFE/MEDIUM| I["✅ Safe Response"]
+    H -->|HIGH/CRITICAL| J["🤖 LLM Query (Mistral)"]
+    J -->|Analysis Result| K["📊 Risk Report"]
+    I -->|Response| L["🌐 Return to Client"]
+    K -->|Response| L
+    L -->|Display| M["💾 Session Log"]
+    M -->|Show User| N["📤 Display Output"]
+    
+    style A fill:#e1f5ff,stroke:#0277bd,stroke-width:2px
+    style B fill:#fff3e0,stroke:#ff6f00,stroke-width:2px
+    style E fill:#e0f2f1,stroke:#00897b,stroke-width:2px
+    style F fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    style G fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style J fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style I fill:#f1f8e9,stroke:#827717,stroke-width:2px
+    style K fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+    style N fill:#fff9c4,stroke:#fbc02d,stroke-width:2px
+```
 
 ### Security Architecture
 - **Input Validation:** Multi-layer (CLI → Backend → LLM)
@@ -223,6 +331,37 @@ K.A.O.S/
 - ✅ **Code Review:** Enterprise-grade standards
 
 ### Threat Mitigations
+
+#### ⚠️ Risk Classification System
+
+```mermaid
+graph TD
+    INPUT["🔍 Command Input"] -->|Analyze| CHECK{"Risk Level?"}
+    
+    CHECK -->|0-25 %| SAFE["🟢 SAFE<br/>(grep, ls, cat, find)"]
+    CHECK -->|25-50 %| MEDIUM["🟡 MEDIUM<br/>(nmap, curl, netstat, lsof)"]
+    CHECK -->|50-75 %| HIGH["🟠 HIGH<br/>(sqlmap, metasploit, hydra, nikto)"]
+    CHECK -->|75-100 %| CRITICAL["🔴 CRITICAL<br/>(rm -rf, mkfs, dd, fork bombs)"]
+    
+    SAFE -->|Allow| RESPONSE["✅ Proceed"]
+    MEDIUM -->|Warn| RESPONSE
+    HIGH -->|LLM Review| RESPONSE
+    CRITICAL -->|Block| BLOCKED["🚫 Denied"]
+    
+    RESPONSE -->|Log| OUTPUT["📝 Output"] 
+    BLOCKED -->|Alert| OUTPUT
+    
+    style INPUT fill:#e0e0e0,stroke:#424242,stroke-width:2px
+    style SAFE fill:#c8e6c9,stroke:#2e7d32,stroke-width:2px
+    style MEDIUM fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    style HIGH fill:#ffccbc,stroke:#d84315,stroke-width:2px
+    style CRITICAL fill:#ffcdd2,stroke:#b71c1c,stroke-width:2px
+    style RESPONSE fill:#e8f5e9,stroke:#388e3c,stroke-width:2px
+    style BLOCKED fill:#ffebee,stroke:#b71c1c,stroke-width:2px
+```
+
+#### 🛡️ Security Mitigations
+
 | Threat | Mitigation | Status |
 |--------|-----------|--------|
 | Command Injection | Heuristic + validation + shlex | ✅ |
