@@ -15,11 +15,14 @@ from pathlib import Path
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%H:%M:%S"
+    datefmt="%H:%M:%S",
 )
 logger = logging.getLogger("ReleaseMgr")
 
-def run_cmd(command, cwd: Path, ignore_errors: bool = False) -> subprocess.CompletedProcess:
+
+def run_cmd(
+    command, cwd: Path, ignore_errors: bool = False
+) -> subprocess.CompletedProcess:
     """Executes a command (string or list) with error handling without using a shell when possible."""
     try:
         if isinstance(command, str):
@@ -33,7 +36,7 @@ def run_cmd(command, cwd: Path, ignore_errors: bool = False) -> subprocess.Compl
             check=not ignore_errors,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
         )
         return result
     except subprocess.CalledProcessError as e:
@@ -43,10 +46,11 @@ def run_cmd(command, cwd: Path, ignore_errors: bool = False) -> subprocess.Compl
             sys.exit(1)
         return e
 
+
 def phase_1_git_ops(root_dir: Path):
     """Initializes Git, configures ignores, and commits state."""
     logger.info("🔧 PHASE 1: GIT REPOSITORY MANAGEMENT")
-    
+
     git_dir = root_dir / ".git"
     if not git_dir.exists():
         logger.info("  • Initializing Git repository...")
@@ -56,19 +60,29 @@ def phase_1_git_ops(root_dir: Path):
 
     gitignore = root_dir / ".gitignore"
     ignores = [
-        "__pycache__/", "*.pyc", ".venv/", "venv/", 
-        ".env", "backups/", "*.log", ".DS_Store"
+        "__pycache__/",
+        "*.pyc",
+        ".venv/",
+        "venv/",
+        ".env",
+        "backups/",
+        "*.log",
+        ".DS_Store",
     ]
-    
+
     logger.info("  • Configuring .gitignore...")
     with open(gitignore, "w") as f:
         f.write("\n".join(ignores) + "\n")
 
     logger.info("  • Snapshotting codebase...")
     run_cmd("git add .", root_dir)
-    
+
     # Commit with specific message, ignore error if clean
-    res = run_cmd('git commit -m "Enterprise Release 1.0 - Ubuntu Deployment Ready"', root_dir, ignore_errors=True)
+    res = run_cmd(
+        'git commit -m "Enterprise Release 1.0 - Ubuntu Deployment Ready"',
+        root_dir,
+        ignore_errors=True,
+    )
     if res.returncode == 0:
         logger.info("  ✅ Codebase committed.")
     elif "nothing to commit" in res.stdout:
@@ -76,10 +90,11 @@ def phase_1_git_ops(root_dir: Path):
     else:
         logger.warning(f"  ⚠️ Commit status unknown: {res.stderr.strip()}")
 
+
 def phase_2_docs(root_dir: Path):
     """Updates README.md with technical specifications."""
     logger.info("📄 PHASE 2: PROFESSIONAL DOCUMENTATION")
-    
+
     readme_path = root_dir / "README.md"
     content = """# K.A.O.S. (Ai-Kali-RHEL) - Ubuntu Deployment Edition
 
@@ -107,23 +122,28 @@ Features a tiered decision engine capable of executing rapid heuristic evaluatio
         logger.error(f"❌ Failed to write README: {e}")
         sys.exit(1)
 
+
 def phase_3_syntax(root_dir: Path):
     """Validates Ansible playbooks."""
     logger.info("🔍 PHASE 3: PRE-FLIGHT SYNTAX CHECK")
-    
+
     playbooks = [
         "K.A.O.S._BACKEND/ops/ansible/deploy_brain.yml",
-        "K.A.O.S._FRONTEND/ops/ansible/deploy_arm.yml"
+        "K.A.O.S._FRONTEND/ops/ansible/deploy_arm.yml",
     ]
-    
+
     for pb_rel in playbooks:
         pb_path = root_dir / pb_rel
         if not pb_path.exists():
             logger.error(f"❌ Playbook missing: {pb_path}")
             sys.exit(1)
-            
+
         logger.info(f"  • Checking: {pb_path.name}")
-        res = run_cmd(f"ansible-playbook --syntax-check {pb_path}", root_dir, ignore_errors=True)
+        res = run_cmd(
+            f"ansible-playbook --syntax-check {pb_path}",
+            root_dir,
+            ignore_errors=True,
+        )
         if res.returncode == 0:
             logger.info(f"  ✅ Syntax Valid: {pb_path.name}")
         else:
@@ -131,33 +151,35 @@ def phase_3_syntax(root_dir: Path):
             print(res.stderr)
             sys.exit(1)
 
+
 def phase_4_artifacts(root_dir: Path):
     """Generates release artifacts."""
     logger.info("📦 PHASE 4: ARTIFACT SHIPMENT PREP")
-    
+
     generator = root_dir / "tools/artifact_generator.py"
     if not generator.exists():
         logger.error(f"❌ Generator tool missing: {generator}")
         sys.exit(1)
-        
+
     logger.info("  • Invoking artifact generator...")
     # Using sys.executable to ensure we use the same python interpreter
     res = run_cmd(f"{sys.executable} {generator}", root_dir)
-    
+
     if res.returncode == 0:
         logger.info("  ✅ Artifacts generated successfully.")
     else:
         logger.error("❌ Artifact generation failed.")
         sys.exit(1)
 
+
 def main():
     # Determine project root (assuming script is in root)
     root_dir = Path(__file__).resolve().parent
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("   K.A.O.S. RELEASE FINALIZER - UBUNTU EDITION")
-    print("="*60 + "\n")
-    
+    print("=" * 60 + "\n")
+
     phase_1_git_ops(root_dir)
     print("")
     phase_2_docs(root_dir)
@@ -165,10 +187,11 @@ def main():
     phase_3_syntax(root_dir)
     print("")
     phase_4_artifacts(root_dir)
-    
-    print("\n" + "="*60)
+
+    print("\n" + "=" * 60)
     print("   ✅ RELEASE READY FOR DEPLOYMENT")
-    print("="*60 + "\n")
+    print("=" * 60 + "\n")
+
 
 if __name__ == "__main__":
     main()

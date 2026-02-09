@@ -2,15 +2,18 @@
 K.A.O.S. Hybrid Engine - Command Analyzer
 Implements Regex Heuristics and Risk Assessment.
 """
+
 import re
 from enum import Enum
 from typing import Dict, Any
+
 
 class RiskLevel(Enum):
     SAFE = "SAFE"
     MEDIUM = "MEDIUM"
     HIGH = "HIGH"
     CRITICAL = "CRITICAL"
+
 
 class ToolType(Enum):
     NMAP = "nmap"
@@ -20,14 +23,15 @@ class ToolType(Enum):
     SYSTEM = "system"
     UNKNOWN = "unknown"
 
+
 class CommandAnalyzer:
-    
+
     DESTRUCTIVE_PATTERNS = [
         r"rm\s+-rf",
         r"mkfs",
         r":\(\)\{\s*:\|:\s*&\s*\};:",  # Fork bomb
         r"dd\s+if=/dev/zero",
-        r"chmod\s+777\s+/"
+        r"chmod\s+777\s+/",
     ]
 
     INTENT_MAP = {
@@ -36,7 +40,7 @@ class CommandAnalyzer:
         "inject": ToolType.SQLMAP,
         "hello": ToolType.CONVERSATION,
         "hi": ToolType.CONVERSATION,
-        "ahoj": ToolType.CONVERSATION
+        "ahoj": ToolType.CONVERSATION,
     }
 
     @staticmethod
@@ -49,14 +53,14 @@ class CommandAnalyzer:
     @staticmethod
     def analyze(command: str) -> Dict[str, Any]:
         command_lower = command.lower()
-        
+
         # 1. Safety Check
         if CommandAnalyzer.check_destructive(command):
             return {
                 "risk": RiskLevel.CRITICAL.value,
                 "tool_type": ToolType.SYSTEM.value,
                 "reasoning": "Destructive command pattern detected.",
-                "allowed": False
+                "allowed": False,
             }
 
         # 2. Fast-Path Intent Detection
@@ -68,8 +72,12 @@ class CommandAnalyzer:
 
         # 3. Construct Analysis
         return {
-            "risk": RiskLevel.SAFE.value if tool_type != ToolType.UNKNOWN else RiskLevel.MEDIUM.value,
+            "risk": (
+                RiskLevel.SAFE.value
+                if tool_type != ToolType.UNKNOWN
+                else RiskLevel.MEDIUM.value
+            ),
             "tool_type": tool_type.value,
             "reasoning": f"Heuristic analysis identified {tool_type.value} intent.",
-            "allowed": True
+            "allowed": True,
         }

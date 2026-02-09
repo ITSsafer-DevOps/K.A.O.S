@@ -18,6 +18,7 @@ SOURCE_DIR = "/opt/arm"
 MAX_BACKUPS = 5
 GPG_HOME = "/root/.gnupg"
 
+
 def create_backup(dev_mode=False):
     """Creates a timestamped .tar.gz backup of the source directory (/opt/arm)."""
     if not os.path.exists(BACKUP_DIR):
@@ -28,20 +29,21 @@ def create_backup(dev_mode=False):
     filepath = os.path.join(BACKUP_DIR, filename)
 
     print(f"Creating backup: {filepath}")
-    
+
     # Create the tarball archive
     with tarfile.open(filepath, "w:gz") as tar:
         tar.add(SOURCE_DIR, arcname=os.path.basename(SOURCE_DIR))
-    
+
     # Sign the backup artifact
     sign_backup(filepath, dev_mode)
-    
+
     return filepath
+
 
 def sign_backup(filepath, dev_mode):
     """Signs the backup file using GPG."""
     gpg = gnupg.GPG(gnupghome=GPG_HOME)
-    
+
     # Check for existing private keys
     keys = gpg.list_keys()
     if not keys:
@@ -53,13 +55,14 @@ def sign_backup(filepath, dev_mode):
             sys.exit(1)
 
     print(f"Signing {filepath}...")
-    with open(filepath, 'rb') as f:
+    with open(filepath, "rb") as f:
         status = gpg.sign_file(f, detach=True, output=f"{filepath}.sig")
-    
-    if status.status != 'sig created':
+
+    if status.status != "sig created":
         print("ERROR: Failed to sign backup.")
         sys.exit(1)
     print("Signature created successfully.")
+
 
 def rotate_backups():
     """Rotates backups, keeping only the last N files defined by MAX_BACKUPS."""
@@ -79,9 +82,12 @@ def rotate_backups():
     else:
         print("No rotation needed.")
 
+
 def main():
     parser = argparse.ArgumentParser(description="K.A.O.S. Backup Manager")
-    parser.add_argument("--dev", action="store_true", help="Skip GPG check for development")
+    parser.add_argument(
+        "--dev", action="store_true", help="Skip GPG check for development"
+    )
     args = parser.parse_args()
 
     try:
@@ -91,6 +97,7 @@ def main():
     except Exception as e:
         print(f"Backup failed: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()
