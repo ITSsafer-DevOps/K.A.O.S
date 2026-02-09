@@ -5,7 +5,7 @@
 
 <p align="center">
     <a href="https://github.com/ITSsafer-DevOps/K.A.O.S" title="K.A.O.S. project">
-        <img src="https://lh3.googleusercontent.com/a/ACg8ocK3mcl_XLJ0Akz7eC6_csg_ZPirUdT97h2PCj98ntcjJpfE4A6-5EhlvMB4-hFh_ld9ccSD3q_VJRsvnHHP6F3OLC2aSos8=s288-c-no" alt="Project Logo" width="180" style="border-radius:12px;padding:6px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);"/>
+        <img src="https://lh3.googleusercontent.com/a/ACg8ocL7Y3S3o2vpWe2l74S2i5i7vN3x_VpllvsaQCwwXIKEHyl8WB5WixuZtiPhofQaSMfix7XAb2T1cnYKCwr1b2S7J5bI6s3e=s288-c-no" alt="Project Logo" width="180" style="border-radius:12px;padding:6px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);"/>
     </a>
 </p>
 
