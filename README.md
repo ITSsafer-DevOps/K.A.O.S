@@ -10,9 +10,17 @@
 </p>
 
 <p align="center">
-    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Red_Hat_logo.svg/320px-Red_Hat_logo.svg.png" alt="Red Hat" height="40"/>&nbsp;&nbsp;
-    <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" height="40"/>&nbsp;&nbsp;
-    <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" height="40"/>
+    <a href="https://www.redhat.com" title="Red Hat">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Red_Hat_logo_only.svg/120px-Red_Hat_logo_only.svg.png" alt="Red Hat Hat" height="40" />
+    </a>
+    &nbsp;&nbsp;
+    <a href="https://www.kali.org" title="Kali Linux">
+        <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" height="40" />
+    </a>
+    &nbsp;&nbsp;
+    <a href="https://ubuntu.com" title="Ubuntu">
+        <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" height="40" />
+    </a>
 </p>
 
 **Note:** This project is under active development.
