@@ -4,22 +4,22 @@
 [![Project in development](https://img.shields.io/badge/status-development-orange)](https://github.com/ITSsafer-DevOps/K.A.O.S)
 
 <p align="center">
-    <a href="https://github.com/ITSsafer-DevOps/K.A.O.S">
-        <img src="https://lh3.googleusercontent.com/a/ACg8ocK3mcl_XLJ0Akz7eC6_csg_ZPirUdT97h2PCj98ntcjJpfE4A6-5EhlvMB4-hFh_ld9ccSD3q_VJRsvnHHP6F3OLC2aSos8=s288-c-no" alt="Project Logo" width="160"/>
+    <a href="https://github.com/ITSsafer-DevOps/K.A.O.S" title="K.A.O.S. project">
+        <img src="https://lh3.googleusercontent.com/a/ACg8ocK3mcl_XLJ0Akz7eC6_csg_ZPirUdT97h2PCj98ntcjJpfE4A6-5EhlvMB4-hFh_ld9ccSD3q_VJRsvnHHP6F3OLC2aSos8=s288-c-no" alt="Project Logo" width="180" style="border-radius:12px;padding:6px;background:#fff;box-shadow:0 4px 14px rgba(0,0,0,0.12);border:1px solid rgba(0,0,0,0.06);"/>
     </a>
 </p>
 
-<p align="center">
+<p align="center" style="margin-top:10px;">
     <a href="https://www.redhat.com" title="Red Hat">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Red_Hat_logo_only.svg/120px-Red_Hat_logo_only.svg.png" alt="Red Hat Hat" height="40" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Red_Hat_logo_only.svg/120px-Red_Hat_logo_only.svg.png" alt="Red Hat Hat" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
-    &nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
     <a href="https://www.kali.org" title="Kali Linux">
-        <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" height="40" />
+        <img src="https://www.kali.org/images/kali-logo.svg" alt="Kali Linux" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
-    &nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
     <a href="https://ubuntu.com" title="Ubuntu">
-        <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" height="40" />
+        <img src="https://assets.ubuntu.com/v1/29985a98-ubuntu-logo32.png" alt="Ubuntu" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
 </p>
 
