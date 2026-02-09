@@ -1,0 +1,4 @@
+* text=auto
+LICENSE text
+*.py linguist-language=Python
+/.github/** linguist-vendored

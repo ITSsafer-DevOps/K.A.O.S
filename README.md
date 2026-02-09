@@ -1,5 +1,9 @@
 # K.A.O.S. (Ai-Kali-RHEL) - Ubuntu Deployment Edition
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)  [![CI](https://github.com/ITSsafer-DevOps/K.A.O.S/actions/workflows/ci.yml/badge.svg)](.github/workflows/ci.yml)
+
+Enterprise-grade Offensive AI Framework for RHEL-compatible environments.
+
 Hybrid Offensive AI Framework for Enterprise Linux Environments.
 
 ## Technical Architecture
