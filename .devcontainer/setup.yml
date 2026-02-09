@@ -1,0 +1,30 @@
+---
+- name: Configure Frontend Dev Container
+  hosts: localhost
+  connection: local
+  become: true
+  
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Install basic tools
+      apt:
+        name:
+          - curl
+          - git
+          - vim
+          - iputils-ping
+        state: present
+
+    - name: Ensure workspace directory exists
+      file:
+        path: /workspace
+        state: directory
+        mode: '0755'
+
+    - name: Print welcome message
+      debug:
+        msg: "Frontend prostredie (K.A.O.S.) pripravené cez Podman!"

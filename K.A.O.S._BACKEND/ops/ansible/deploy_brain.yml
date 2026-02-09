@@ -1,0 +1,123 @@
+---
+# K.A.O.S. Brain - Enterprise Atomic Deployment
+# Deploys the Python/Flask Backend using Systemd and Gunicorn with Rollback logic.
+
+- name: Deploy K.A.O.S. Brain Backend (Enterprise)
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+  become: yes
+
+  vars:
+    app_name: kaos-brain
+    app_user: kaos_svc
+    project_root: "{{ playbook_dir }}/../.."
+    app_src: "{{ project_root }}/src/brain"
+    deploy_dir: "/opt/{{ app_name }}"
+    venv_dir: "{{ deploy_dir }}/venv"
+    gunicorn_port: 5000
+    gunicorn_workers: 3
+
+  tasks:
+    - name: "🚀 PHASE 1: PREPARATION"
+      block:
+        - name: Ensure Service User Exists
+          user:
+            name: "{{ app_user }}"
+            system: yes
+            shell: /bin/false
+
+        - name: Create Deployment Directory
+          file:
+            path: "{{ deploy_dir }}"
+            state: directory
+            owner: "{{ app_user }}"
+            group: "{{ app_user }}"
+            mode: '0755'
+
+    - name: "📦 PHASE 2: ARTIFACT DEPLOYMENT"
+      block:
+        - name: Synchronize Source Code
+          copy:
+            src: "{{ app_src }}/"
+            dest: "{{ deploy_dir }}/app/"
+            owner: "{{ app_user }}"
+            group: "{{ app_user }}"
+            mode: '0644'
+
+        - name: Install System Dependencies
+          package:
+            name:
+              - python3-pip
+              - python3-virtualenv
+            state: present
+
+        - name: Create Virtual Environment
+          command: "python3 -m virtualenv {{ venv_dir }}"
+          args:
+            creates: "{{ venv_dir }}/bin/activate"
+
+        - name: Install Python Requirements
+          pip:
+            requirements: "{{ deploy_dir }}/app/requirements.txt"
+            virtualenv: "{{ venv_dir }}"
+
+    - name: "⚙️ PHASE 3: SERVICE CONFIGURATION"
+      block:
+        - name: Create Systemd Service File
+          copy:
+            dest: "/etc/systemd/system/{{ app_name }}.service"
+            content: |
+              [Unit]
+              Description=K.A.O.S. Brain Gunicorn Service
+              After=network.target
+
+              [Service]
+              User={{ app_user }}
+              Group={{ app_user }}
+              WorkingDirectory={{ deploy_dir }}/app
+              Environment="PATH={{ venv_dir }}/bin"
+              ExecStart={{ venv_dir }}/bin/gunicorn --workers {{ gunicorn_workers }} --bind 0.0.0.0:{{ gunicorn_port }} --worker-class gevent app.main:app
+              Restart=always
+
+              [Install]
+              WantedBy=multi-user.target
+            notify: Restart Brain Service
+
+    - name: "✅ PHASE 4: ACTIVATION & VERIFICATION"
+      block:
+        - name: Enable and Start Service
+          systemd:
+            name: "{{ app_name }}"
+            state: started
+            enabled: yes
+            daemon_reload: yes
+
+        - name: Wait for Port Availability
+          wait_for:
+            port: "{{ gunicorn_port }}"
+            delay: 2
+            timeout: 30
+
+        - name: Health Check
+          uri:
+            url: "http://127.0.0.1:{{ gunicorn_port }}/api/v1/health"
+            status_code: 200
+          register: health_result
+
+      rescue:
+        - name: "⚠️ ROLLBACK INITIATED"
+          debug:
+            msg: "Deployment failed. Rolling back service state."
+
+        - name: Stop Service
+          systemd:
+            name: "{{ app_name }}"
+            state: stopped
+
+  handlers:
+    - name: Restart Brain Service
+      systemd:
+        name: "{{ app_name }}"
+        state: restarted
+        daemon_reload: yes

@@ -1,0 +1,228 @@
+---
+# K.A.O.S. Arm Client - Kali Linux Container Deployment with Deep Cleanup
+# No Docker - Podman only on RHEL targets
+# Features: Deep cleanup -> Pull Image -> Provision Container -> Bootstrap Python
+
+- name: Deploy K.A.O.S. Arm - Kali Linux Container on RHEL with Clean Slate
+  hosts: localhost
+  connection: local
+  gather_facts: yes
+
+  vars:
+    kali_container_name: kali-ai
+    kali_image: docker.io/kalilinux/kali-rolling
+    # Dynamic Path Resolution
+    project_root: "{{ playbook_dir }}/../.."
+    arm_src: "{{ project_root }}/src/kaos_arm"
+    container_port: 9000
+    host_port: 9000
+    # Smart Network Discovery:
+    # 1. BRAIN_HOST env var
+    # 2. Localhost (127.0.0.1)
+    brain_host: "{{ lookup('env', 'BRAIN_HOST') | default('127.0.0.1', true) }}"
+    brain_port: 5000
+
+  pre_tasks:
+    - name: "🧹 PHASE 0: DEEP CLEANUP - Remove Legacy Containers"
+      block:
+        - name: Display cleanup banner
+          debug:
+            msg:
+              - ""
+              - "╔════════════════════════════════════════════════════════════╗"
+              - "║  🧹 PHASE 0: ARM CLEANUP - Remove Old kali-ai Container   ║"
+              - "╚════════════════════════════════════════════════════════════╝"
+
+        - name: Stop kali-ai container if exists
+          shell: "podman stop {{ kali_container_name }} 2>/dev/null || true"
+          become: no
+          ignore_errors: yes
+
+        - name: Force remove kali-ai container
+          shell: "podman rm -f {{ kali_container_name }} 2>/dev/null || true"
+          become: no
+          ignore_errors: yes
+
+        - name: Prune Podman networks
+          shell: "podman network prune -f 2>/dev/null || true"
+          become: no
+          ignore_errors: yes
+
+        - name: Display cleanup complete
+          debug:
+            msg:
+              - "✅ Old kali-ai container removed"
+              - "✅ Networks pruned"
+              - "✅ Ready for fresh provisioning"
+              - ""
+
+  tasks:
+    - name: "✅ PHASE 1: PRE-DEPLOYMENT CHECKS"
+      block:
+        - name: Ensure Host Persistence Directory Exists
+          file:
+            path: "{{ arm_src }}"
+            state: directory
+            mode: '0755'
+          # CRITICAL: Ensures we mount a real directory with correct permissions, not an auto-created root volume
+
+    - name: "✅ PHASE 2: CONTAINER IMAGE PROVISIONING"
+      block:
+        - name: Install Podman (RedHat)
+          yum:
+            name: podman
+            state: present
+          become: yes
+          when: ansible_os_family == "RedHat"
+
+        - name: Install shadow-utils-subid (RedHat)
+          yum:
+            name: shadow-utils-subid
+            state: present
+          become: yes
+          when: ansible_os_family == "RedHat"
+
+        - name: Install Podman (Debian)
+          apt:
+            name: podman
+            state: present
+            update_cache: yes
+          become: yes
+          when: ansible_os_family == "Debian"
+
+        - name: "🔧 PHASE 2.5: PODMAN NAMESPACE SETUP"
+          block:
+            - name: Configure SubUIDs for current user
+              lineinfile:
+                path: /etc/subuid
+                line: "{{ ansible_user_id }}:100000:65536"
+                create: yes
+              become: yes
+
+            - name: Configure SubGIDs for current user
+              lineinfile:
+                path: /etc/subgid
+                line: "{{ ansible_user_id }}:100000:65536"
+                create: yes
+              become: yes
+
+            - name: Migrate Podman system
+              shell: "podman system migrate"
+              become: no
+              ignore_errors: yes
+
+        - name: Pull Kali Linux image
+          shell: "podman pull {{ kali_image }}"
+          become: no
+          register: image_pull
+          retries: 3
+          delay: 5
+
+    - name: "✅ PHASE 3: CONTAINER PROVISIONING"
+      block:
+        - name: Create Kali container with volume mount
+          shell: |
+            podman run -d \
+              --name {{ kali_container_name }} \
+              --privileged \
+              --volume "{{ arm_src }}:/opt/arm:Z" \
+              --net host \
+              --env PYTHONUNBUFFERED=1 \
+              --env KAOS_MODE=container \
+              --env BRAIN_HOST={{ brain_host }} \
+              --env BRAIN_PORT={{ brain_port }} \
+              --env ARM_PORT={{ container_port }} \
+              --cap-add SYS_PTRACE \
+              {{ kali_image }} \
+              sleep infinity
+          become: no
+          register: container_created
+
+        - name: Wait for container to be ready
+          pause:
+            seconds: 3
+
+    - name: "✅ PHASE 4: BOOTSTRAP PYTHON ENVIRONMENT"
+      block:
+        - name: Update container packages
+          shell: "podman exec {{ kali_container_name }} apt-get update 2>&1"
+          become: no
+          ignore_errors: yes
+
+        - name: Install Python and security tools in container
+          shell: |
+            podman exec {{ kali_container_name }} \
+              apt-get install -y python3 python3-pip python3-venv python3-dev build-essential git curl nmap iputils-ping zsh iproute2 procps net-tools 2>&1
+          become: no
+          register: python_install
+
+        - name: Create Python venv in container
+          shell: "podman exec {{ kali_container_name }} python3 -m venv /opt/arm/.venv"
+          become: no
+
+        - name: Upgrade pip in container venv
+          shell: |
+            podman exec {{ kali_container_name }} \
+              /opt/arm/.venv/bin/pip install --upgrade pip setuptools wheel 2>&1
+          become: no
+
+        - name: Install ARM dependencies in container
+          shell: |
+            podman exec {{ kali_container_name }} \
+              /opt/arm/.venv/bin/pip install -r /opt/arm/requirements.txt 2>&1
+          become: no
+          ignore_errors: yes
+
+    - name: "✅ PHASE 5: VERIFICATION"
+      block:
+        - name: Verify container is running
+          shell: "podman ps | grep {{ kali_container_name }}"
+          become: no
+          register: container_status
+          failed_when: container_status.rc != 0
+
+        - name: Test Python in container
+          shell: |
+            podman exec {{ kali_container_name }} \
+              /opt/arm/.venv/bin/python3 -c "import sys; print('Python:', sys.version.split()[0])"
+          become: no
+          register: python_test
+
+        - name: Display ARM deployment success
+          debug:
+            msg:
+              - ""
+              - "╔════════════════════════════════════════════════════════════╗"
+              - "║  ✅ K.A.O.S. ARM DEPLOYMENT SUCCESSFUL                   ║"
+              - "╚════════════════════════════════════════════════════════════╝"
+              - "Container: {{ kali_container_name }}"
+              - "Image: {{ kali_image }}"
+              - "Port: {{ host_port }} → {{ container_port }}"
+              - "Volume: {{ arm_src }} → /opt/arm"
+              - "Python: {{ python_test.stdout }}"
+              - "Brain Backend: {{ brain_host }}:{{ brain_port }}"
+              - ""
+              - "Management Commands:"
+              - "  podman exec -it {{ kali_container_name }} /bin/bash"
+              - "  podman logs -f {{ kali_container_name }}"
+              - "  podman ps | grep {{ kali_container_name }}"
+              - ""
+              - "Test ARM→Brain Connection:"
+              - "  podman exec {{ kali_container_name }} curl -s http://{{ brain_host }}:{{ brain_port }}/api/v1/health"
+              - ""
+
+  handlers:
+    - name: Cleanup on failure
+      block:
+        - name: Stop failed container
+          shell: "podman stop {{ kali_container_name }} 2>/dev/null || true"
+          become: no
+
+        - name: Remove failed container
+          shell: "podman rm -f {{ kali_container_name }} 2>/dev/null || true"
+          become: no
+
+# Priority:
+# 1. BRAIN_HOST environment variable
+# 2. Podman default gateway (172.17.0.1)
+# 3. Fallback: Localhost (127.0.0.1)

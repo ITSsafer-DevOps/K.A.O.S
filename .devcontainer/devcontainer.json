@@ -1,0 +1,36 @@
+{
+	"name": "K.A.O.S. Frontend Dev",
+	"image": "mcr.microsoft.com/devcontainers/base:ubuntu-22.04",
+	"features": {
+		"ghcr.io/devcontainers/features/ansible:1": {}
+	},
+	"runArgs": [
+		"--userns=keep-id",
+		"--name=kaos-frontend-dev"
+	],
+	
+	// 1. Hlavný pracovný priestor: Pripojíme K.A.O.S._FRONTEND do /workspace
+	"workspaceMount": "source=/home/RHEL/K.A.O.S. ENTERPRISE (RHEL-CENTRIC)/K.A.O.S._FRONTEND,target=/workspace,type=bind,Z",
+	"workspaceFolder": "/workspace",
+
+	// 2. Pomocný mount: Pripojíme tento konfiguračný priečinok do /config, 
+	// aby sme mali prístup k setup.yml počas buildu
+	"mounts": [
+		"source=${localWorkspaceFolder},target=/config,type=bind,Z"
+	],
+
+	// Spustíme Ansible playbook z pomocného mountu /config
+	"postCreateCommand": "ansible-playbook /config/.devcontainer/setup.yml",
+
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.defaultProfile.linux": "bash"
+			},
+			"extensions": [
+				"redhat.ansible"
+			]
+		}
+	},
+	"remoteUser": "vscode"
+}

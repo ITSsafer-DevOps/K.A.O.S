@@ -1,0 +1,6 @@
+flask
+gunicorn
+gevent
+orjson
+tenacity
+requests
