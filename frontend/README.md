@@ -1,83 +1,53 @@
-# K.A.O.S. rm Client (Enterprise Edition)
+# K.A.O.S. ARM - Frontend CLI Client
 
-**Product Version:** 1.0.0-RC1  
-**Target Platform:** Red Hat Enterprise Linux (RHEL) 8/9  
-**Container Engine:** Podman (Rootless)
+**Component:** Distributed Kali-compatible CLI agent  
+**Platform:** RHEL 8+, Ubuntu 20.04+  
+**Container:** Podman (rootless) / Docker  
+**Language:** Python 3.10+  
 
-## 1. Product Overview
-
-The **K.A.O.S. Arm Client** is the secure frontend interface for the K.A.O.S. distributed intelligence system. It provides a containerized, ephemeral Kali Linux environment orchestrated by Podman on RHEL workstations. The client acts as a hybrid agent, bridging local execution capabilities with the "Brain" backend for command analysis and decision support.
-
-## 2. Solution Architecture
-
-The solution utilizes a rootless container architecture to ensure host security while providing necessary capabilities for security operations.
-
-```mermaid
-graph TB
-    subgraph "🖥️ RHEL Workstation (Host)"
-        A["🔒 Security Boundary"]
-        subgraph "🐳 Podman Rootless<br/>User Namespace"
-            B["🛡️ kali-ai Container<br/>Rootless Mode"]
-            C["🐍 Python Agent<br/>🔧 Security Tools<br/>🖥️ ZSH Interface"]
-        end
-        D["📁 /opt/arm<br/>Volume Mount :Z"]
-    end
-    subgraph "🧠 Backend Network"
-        E["🌐 BRAIN Backend<br/>Flask/Gunicorn"]
-    end
-    B --> C
-    C --> E
-    B --> D
-    C -->|HTTP/JSON| E
-    style A fill:#262626,stroke:#c41c3b,color:#fff,stroke-width:3px
-    style B fill:#e74c3c,stroke:#262626,color:#fff
-    style C fill:#c41c3b,stroke:#262626,color:#fff
-    style D fill:#d35400,stroke:#262626,color:#fff
-    style E fill:#2980b9,stroke:#262626,color:#fff
-```
-
-## 3. Prerequisites
-
-*   **Operating System:** RHEL 8, RHEL 9, or Fedora.
-*   **User Privileges:** Standard user with `sudo` access (required for initial package installation and namespace configuration).
-*   **Network:** Outbound access to `docker.io` for image pulling.
-
-## 4. Installation Procedure
-
-The deployment is fully automated via Ansible. This process handles:
-1.  Deep cleanup of legacy containers.
-2.  Installation of Podman and `shadow-utils-subid`.
-3.  Configuration of Rootless SubUID/SubGID namespaces.
-4.  Provisioning of the Kali Linux container with `NET_RAW` capabilities.
-
-### 4.1. Deploy
-Run the playbook from the project root:
+## Quick Start
 
 ```bash
-ansible-playbook ops/ansible/deploy_arm.yml --ask-become-pass
+# Install dependencies
+pip install -r requirements.txt
+
+# Run CLI
+export BRAIN_HOST=127.0.0.1
+export BRAIN_PORT=5000
+python main.py
 ```
 
-*Note: You will be prompted for your sudo password to configure system namespaces.*
-
-## 5. Operational Guide
-
-### 5.1. Accessing the Agent
-A convenience script is installed to `~/bin/kali-ai`. Ensure this directory is in your `$PATH`.
+## Usage
 
 ```bash
-# Launch the Hybrid Agent directly
-~/bin/kali-ai
+# Interactive CLI
+python main.py
+
+# Enter commands at prompt
+> scan network
+> inject payload
+> hello
 ```
 
-### 5.2. Manual Shell Access
-To access the raw ZSH shell inside the container:
+## Core Modules
+
+| Module | Purpose |
+|--------|----------|
+| `main.py` | CLI interface & session management |
+| `validator.py` | Input validation |
+
+## Features
+
+- **Local Fallback:** Works offline with heuristic rules
+- **Session Logging:** persistent to `/opt/arm/session.log`
+- **ANSI Colors:** Terminal output formatting
+- **Brain API:** Remote analysis via REST
+
+## Deployment
 
 ```bash
-podman exec -it kali-ai /bin/zsh
+ansible-playbook ops/ansible/deploy_arm.yml
 ```
-
-### 5.3. Data Persistence
-*   **Workspace:** All data in `src/kaos_arm` on the host is mounted to `/opt/arm` in the container.
 *   **Backups:** Stored in `/opt/arm/backups`.
 
 ## 6. Troubleshooting

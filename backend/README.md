@@ -1,53 +1,45 @@
-# K.A.O.S. Brain - Cognitive Backend (Enterprise)
+# K.A.O.S. Brain - Backend Analysis Engine
 
-## Architecture
+**Component:** LLM-powered REST API with heuristic analyzer  
+**Framework:** Flask + Gunicorn  
+**Language:** Python 3.10+  
+**Port:** 5000 (development), configurable via env  
 
-```mermaid
-graph LR
-    subgraph "🖥️ Frontend Layer"
-        A["🛡️ Kali Client<br/>Agent"]
-    end
-    subgraph "🧠 Cognitive Backend"
-        B["🔗 Flask/Gunicorn<br/>HTTP API"]
-        C["⚡ Hybrid Engine<br/>Regex + Risk"]
-        D["🧬 Ollama LLM<br/>Mistral/Llama"]
-    end
-    subgraph "📊 Analysis Stack"
-        E["📈 Decision Engine<br/>Fast-Path"]
-        F["🔍 Deep Reasoning<br/>Threats"]
-    end
-    A -->|JSON| B
-    B --> C
-    C --> E
-    C --> D
-    D --> F
-    style A fill:#c41c3b,stroke:#262626,color:#fff
-    style B fill:#e74c3c,stroke:#262626,color:#fff
-    style C fill:#e74c3c,stroke:#262626,color:#fff
-    style D fill:#9b59b6,stroke:#262626,color:#fff
-    style E fill:#27ae60,stroke:#262626,color:#fff
-    style F fill:#3498db,stroke:#262626,color:#fff
+## Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Run server
+export OLLAMA_URL=http://localhost:11434/api/generate
+export OLLAMA_MODEL=mistral
+python -m flask run --host=0.0.0.0 --port=5000
 ```
 
-## Overview
-The K.A.O.S. Brain is the central cognitive processing unit for the security operations platform. It utilizes a hybrid approach combining deterministic regex heuristics for fast-path analysis and Large Language Models (LLM) for deep reasoning.
+## Endpoints
+
+- `GET /api/v1/health` - Health check
+- `POST /api/v1/analyze` - Command analysis (heuristic + LLM)
+
+## Core Modules
+
+| Module | Purpose |
+|--------|----------|
+| `app/main.py` | Flask application & routing |
+| `core/analyzer.py` | Risk assessment & pattern matching |
+| `core/validator.py` | Input validation |
+
+## Configuration
+
+Environment variables (see `config/settings.py`):
+- `OLLAMA_URL` - LLM endpoint
+- `OLLAMA_MODEL` - Model name (default: mistral)
+- `OLLAMA_TIMEOUT` - Timeout in seconds (default: 10)
+- `OLLAMA_RETRIES` - Retry attempts (default: 3)
 
 ## Deployment
-
-This repository utilizes an atomic Ansible deployment strategy with Systemd integration and automatic rollback capabilities.
-
-### Prerequisites
-- Ansible installed on control node.
-- Target host accessible via SSH (or localhost).
-
-### Run Deployment
-Execute the following command from the project root:
 
 ```bash
 ansible-playbook ops/ansible/deploy_brain.yml
 ```
-
-## Features
-- **Tenacity**: Robust retry logic for LLM connections.
-- **Orjson**: High-performance JSON serialization.
-- **Safety**: Pre-flight checks for destructive commands.
