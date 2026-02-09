@@ -11,7 +11,7 @@
 
 <p align="center" style="margin-top:10px;">
     <a href="https://www.redhat.com" title="Red Hat">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Red_Hat_logo_only.svg/120px-Red_Hat_logo_only.svg.png" alt="Red Hat Hat" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/73/Red_hat_logo.svg/120px-Red_hat_logo.svg.png" alt="Red Hat Hat" height="44" style="background:#fff;border-radius:6px;padding:4px;box-shadow:0 2px 8px rgba(0,0,0,0.08);" />
     </a>
     &nbsp;&nbsp;&nbsp;
     <a href="https://www.kali.org" title="Kali Linux">
