@@ -3,6 +3,7 @@ import orjson
 import logging
 from tenacity import retry, stop_after_attempt, wait_fixed, retry_if_exception_type
 import requests
+import os
 
 from .core.analyzer import CommandAnalyzer
 from .core.validator import TargetValidator
@@ -12,8 +13,10 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("KAOS_BRAIN")
 
 # Configuration
-OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "mistral"
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "mistral")
+APP_HOST = os.getenv("KAOS_HOST", "127.0.0.1")
+APP_PORT = int(os.getenv("KAOS_PORT", "5000"))
 
 def json_response(data, status=200):
     return Response(
@@ -78,4 +81,4 @@ def analyze():
         return json_response({"error": "Internal Server Error"}, status=500)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host=APP_HOST, port=APP_PORT)

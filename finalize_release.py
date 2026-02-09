@@ -8,6 +8,7 @@ Purpose: Automates final preparation steps for Enterprise Release 1.0 (Ubuntu Ta
 import subprocess
 import sys
 import logging
+import shlex
 from pathlib import Path
 
 # Configure Logging
@@ -18,13 +19,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger("ReleaseMgr")
 
-def run_cmd(command: str, cwd: Path, ignore_errors: bool = False) -> subprocess.CompletedProcess:
-    """Executes a shell command with error handling."""
+def run_cmd(command, cwd: Path, ignore_errors: bool = False) -> subprocess.CompletedProcess:
+    """Executes a command (string or list) with error handling without using a shell when possible."""
     try:
+        if isinstance(command, str):
+            args = shlex.split(command)
+        else:
+            args = command
+
         result = subprocess.run(
-            command,
+            args,
             cwd=cwd,
-            shell=True,
             check=not ignore_errors,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,

@@ -4,11 +4,10 @@ K.A.O.S. Arm Client - Hybrid Agent
 Acts as the frontend CLI for the distributed system. Replicates the Kali Linux environment.
 """
 
-import sys
 import os
 import time
-import json
 import subprocess
+import shlex
 import shutil
 import requests
 from datetime import datetime
@@ -115,9 +114,12 @@ def main():
                 # Reflex Loop: Trusted Execution (No Confirmation)
                 print(f"{Fore.GREEN}⚡ Executing: {user_input}{Style.RESET_ALL}")
                 try:
-                    subprocess.run(user_input, shell=True, check=True)
+                    args = shlex.split(user_input)
+                    subprocess.run(args, check=True)
                 except subprocess.CalledProcessError as e:
                     print(f"{Fore.RED}Error executing command: {e}{Style.RESET_ALL}")
+                except ValueError:
+                    print(f"{Fore.RED}Failed to parse command.{Style.RESET_ALL}")
                 continue
 
             # Cognition Loop: Natural Language -> Brain API
@@ -134,9 +136,12 @@ def main():
             if confirm == 'Y': # 'Y' stands for 'Yes'
                 # 5. Execution Phase
                 try:
-                    subprocess.run(proposed_cmd, shell=True, check=True)
+                    args = shlex.split(proposed_cmd)
+                    subprocess.run(args, check=True)
                 except subprocess.CalledProcessError as e:
                     print(f"{Fore.RED}Error executing command: {e}{Style.RESET_ALL}")
+                except ValueError:
+                    print(f"{Fore.RED}Failed to parse proposed command.{Style.RESET_ALL}")
             else:
                 print(f"{Fore.YELLOW}Command cancelled.{Style.RESET_ALL}")
 

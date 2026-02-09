@@ -5,7 +5,6 @@ Author: K.A.O.S. DevOps Team
 Purpose: Master backup utility for generating release source archives.
 """
 
-import os
 import sys
 import tarfile
 import hashlib
