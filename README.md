@@ -50,6 +50,15 @@ Hybrid Offensive AI Framework for Enterprise Linux Environments.
 
 ## Technical Architecture
 
+---
+
+## Contact
+
+Project lead: Kristián Kašník  
+LinkedIn: [linkedin.com/in/kristián-kašník-03056a377](https://linkedin.com/in/kristián-kašník-03056a377)  
+Email: [itssafer@itssafer.org](mailto:itssafer@itssafer.org)
+
+
 ```mermaid
 graph TB
     subgraph "🏢 Enterprise Layer"
