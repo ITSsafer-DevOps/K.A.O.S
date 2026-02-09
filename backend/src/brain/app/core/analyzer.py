@@ -71,13 +71,18 @@ class CommandAnalyzer:
                 break
 
         # 3. Construct Analysis
+        if tool_type != ToolType.UNKNOWN:
+            risk_val = RiskLevel.SAFE.value
+        else:
+            risk_val = RiskLevel.MEDIUM.value
+
+        reasoning_text = (
+            "Heuristic analysis identified " + tool_type.value + " intent."
+        )
+
         return {
-            "risk": (
-                RiskLevel.SAFE.value
-                if tool_type != ToolType.UNKNOWN
-                else RiskLevel.MEDIUM.value
-            ),
+            "risk": risk_val,
             "tool_type": tool_type.value,
-            "reasoning": f"Heuristic analysis identified {tool_type.value} intent.",
+            "reasoning": reasoning_text,
             "allowed": True,
         }

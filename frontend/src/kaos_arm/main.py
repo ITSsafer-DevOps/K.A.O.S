@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 K.A.O.S. Arm Client - Hybrid Agent
-Acts as the frontend CLI for the distributed system. Replicates the Kali Linux environment.
+Acts as the frontend CLI for the distributed system.
+Replicates the Kali Linux environment.
 """
 
 import os
@@ -26,26 +27,25 @@ BRAIN_PORT = os.getenv("BRAIN_PORT", "5000")
 def print_banner():
     """Displays the startup banner in Red (English System Log)."""
     print(
-        f"{Fore.RED}⚡ Starting Kali Linux AI environment...{Style.RESET_ALL}"
+        Fore.RED + "⚡ Starting Kali Linux AI environment..." + Style.RESET_ALL
     )
     time.sleep(0.5)
 
 
 def ensure_persistence():
     """
-    Writes a timestamp to the session log to verify volume mounting on the host.
-    If this fails, the container is likely not mounted correctly to the host.
+    Write a timestamp to the session log.
+    This verifies volume mounting on the host.
+    If this fails, the container may not be mounted correctly.
     """
     try:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        entry = "[" + timestamp + "] Session started. Brain: "
+        entry = entry + BRAIN_HOST + ":" + BRAIN_PORT + "\n"
         with open(SESSION_LOG, "a") as f:
-            f.write(
-                f"[{timestamp}] Session started. Brain: {BRAIN_HOST}:{BRAIN_PORT}\n"
-            )
+            f.write(entry)
     except IOError as e:
-        print(
-            f"{Fore.RED}ERROR: Failed to write to persistent storage: {e}{Style.RESET_ALL}"
-        )
+        print(Fore.RED + "ERROR: Failed to write to persistent storage: " + str(e) + Style.RESET_ALL)
 
 
 def brain_analysis(command_input):
@@ -68,10 +68,10 @@ def brain_analysis(command_input):
             "reasoning": llm_layer.get("reasoning"),
         }
     except requests.exceptions.RequestException as e:
-        print(f"{Fore.RED}⚠️ Brain offline: {e}{Style.RESET_ALL}")
+        print(Fore.RED + "⚠️ Brain offline: " + str(e) + Style.RESET_ALL)
 
         # Fallback Logic
-        proposed_cmd = f"echo 'Analysis failed: {command_input}'"
+        proposed_cmd = "echo 'Analysis failed: " + command_input + "'"
         lower_input = command_input.lower()
 
         if "scan" in lower_input:
@@ -92,7 +92,12 @@ def get_kali_prompt():
     Line 2: └─#
     """
     # Line 1: Blue bracket, Red user, White host, Blue path
-    line1 = f"{Fore.BLUE}┌──({Fore.RED}root㉿kaos-ai{Fore.BLUE})-[{Style.RESET_ALL}~/host_home{Fore.BLUE}]{Style.RESET_ALL}"
+    user_part = f"{Fore.RED}root㉿kaos-ai{Fore.BLUE}"
+    path_part = f"{Style.RESET_ALL}~/host_home{Fore.BLUE}"
+    line1 = (
+        f"{Fore.BLUE}┌──({user_part})-[{path_part}]"
+        f"{Style.RESET_ALL}"
+    )
     print(line1)
     # Line 2: Blue bracket, Hash, Reset
     return f"{Fore.BLUE}└─#{Style.RESET_ALL} "
@@ -113,13 +118,17 @@ def main():
             # 2. Exit Trap (Slovak UI)
             if user_input == "exit":
                 print(
-                    f"{Fore.RED}🔴 Invalid command. To exit use: kali-exit{Style.RESET_ALL}"
+                    Fore.RED
+                    + "🔴 Invalid command. To exit use: kali-exit"
+                    + Style.RESET_ALL
                 )
                 continue
 
             if user_input == "kali-exit":
                 print(
-                    f"{Fore.YELLOW}Session ended. Shutting down container...{Style.RESET_ALL}"
+                    Fore.YELLOW
+                    + "Session ended. Shutting down container..."
+                    + Style.RESET_ALL
                 )
                 break
 
@@ -128,20 +137,16 @@ def main():
 
             if shutil.which(first_word):
                 # Reflex Loop: Trusted Execution (No Confirmation)
-                print(
-                    f"{Fore.GREEN}⚡ Executing: {user_input}{Style.RESET_ALL}"
-                )
+                msg = Fore.GREEN + "⚡ Executing: " + user_input + Style.RESET_ALL
+                print(msg)
                 try:
                     args = shlex.split(user_input)
                     subprocess.run(args, check=True)
                 except subprocess.CalledProcessError as e:
-                    print(
-                        f"{Fore.RED}Error executing command: {e}{Style.RESET_ALL}"
-                    )
+                    err = Fore.RED + "Error executing command: " + str(e) + Style.RESET_ALL
+                    print(err)
                 except ValueError:
-                    print(
-                        f"{Fore.RED}Failed to parse command.{Style.RESET_ALL}"
-                    )
+                    print(Fore.RED + "Failed to parse command." + Style.RESET_ALL)
                 continue
 
             # Cognition Loop: Natural Language -> Brain API
@@ -149,10 +154,10 @@ def main():
             proposed_cmd = response.get("proposed_command")
             reasoning = response.get("reasoning", "No reasoning provided.")
 
-            print(f"🤖 AI Reasoning: {Fore.CYAN}{reasoning}{Style.RESET_ALL}")
-            print(
-                f"🤖 AI Suggests: {Fore.CYAN}{proposed_cmd}{Style.RESET_ALL}"
-            )
+            print("🤖 AI Reasoning: ")
+            print(Fore.CYAN + str(reasoning) + Style.RESET_ALL)
+            print("🤖 AI Suggests: ")
+            print(Fore.CYAN + str(proposed_cmd) + Style.RESET_ALL)
 
             # 4. Safety Loop (Human-in-the-Loop / English UI)
             confirm = input("Execute this command? [Y/n]: ").strip().upper()
@@ -163,25 +168,18 @@ def main():
                     args = shlex.split(proposed_cmd)
                     subprocess.run(args, check=True)
                 except subprocess.CalledProcessError as e:
-                    print(
-                        f"{Fore.RED}Error executing command: {e}{Style.RESET_ALL}"
-                    )
+                        err = Fore.RED + "Error executing command: " + str(e) + Style.RESET_ALL
+                        print(err)
                 except ValueError:
-                    print(
-                        f"{Fore.RED}Failed to parse proposed command.{Style.RESET_ALL}"
-                    )
+                    print(Fore.RED + "Failed to parse proposed command." + Style.RESET_ALL)
             else:
                 print(f"{Fore.YELLOW}Command cancelled.{Style.RESET_ALL}")
 
         except EOFError:
-            print(
-                f"\n{Fore.YELLOW}Use 'kali-exit' to terminate.{Style.RESET_ALL}"
-            )
+            print("\n" + Fore.YELLOW + "Use 'kali-exit' to terminate." + Style.RESET_ALL)
             continue
         except KeyboardInterrupt:
-            print(
-                f"\n{Fore.YELLOW}Use 'kali-exit' to terminate.{Style.RESET_ALL}"
-            )
+            print("\n" + Fore.YELLOW + "Use 'kali-exit' to terminate." + Style.RESET_ALL)
 
 
 if __name__ == "__main__":

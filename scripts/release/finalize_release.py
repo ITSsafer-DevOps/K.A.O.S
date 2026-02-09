@@ -96,24 +96,42 @@ def phase_2_docs(root_dir: Path):
     logger.info("📄 PHASE 2: PROFESSIONAL DOCUMENTATION")
 
     readme_path = root_dir / "README.md"
-    content = """# K.A.O.S. (Ai-Kali-RHEL) - Ubuntu Deployment Edition
-
-Hybrid Offensive AI Framework for Enterprise Linux Environments.
-
-## Technical Architecture
-
-### High-Performance Backend (Gunicorn/Gevent)
-Engineered for high-concurrency environments, the backend utilizes Gunicorn with Gevent workers to ensure non-blocking I/O operations, critical for real-time AI processing.
-
-### Persistence Strategy (Symlinking)
-Adopts a robust symlink-based architecture for configuration management and data persistence, ensuring seamless upgrades and state retention across container lifecycles.
-
-### Enterprise Orchestration (Ansible Atomic Deploy)
-Deployment logic is encapsulated in Ansible playbooks designed for atomicity. This guarantees that infrastructure changes are either fully applied or rolled back, preventing inconsistent states.
-
-### Hybrid Intelligence (Fast-Path logic)
-Features a tiered decision engine capable of executing rapid heuristic evaluations (Fast-Path) for immediate threats, while offloading complex analysis to deep learning models.
-"""
+    content_lines = [
+        "# K.A.O.S. (Ai-Kali-RHEL) - Ubuntu Deployment Edition",
+        "",
+        "Hybrid Offensive AI Framework for Enterprise Linux Environments.",
+        "",
+        "## Technical Architecture",
+        "",
+        "### High-Performance Backend (Gunicorn/Gevent)",
+        (
+            "Engineered for high-concurrency environments, the backend uses "
+            "Gunicorn with Gevent workers to provide non-blocking I/O for "
+            "real-time AI processing."
+        ),
+        "",
+        "### Persistence Strategy (Symlinking)",
+        (
+            "Adopts a symlink-based architecture for configuration and "
+            "data persistence, enabling seamless upgrades and state "
+            "retention across container lifecycles."
+        ),
+        "",
+        "### Enterprise Orchestration (Ansible Atomic Deploy)",
+        (
+            "Deployment logic is encapsulated in Ansible playbooks designed "
+            "for atomicity so infrastructure changes are either fully applied "
+            "or rolled back."
+        ),
+        "",
+        "### Hybrid Intelligence (Fast-Path logic)",
+        (
+            "Features a tiered decision engine capable of rapid heuristic "
+            "evaluations (Fast-Path) for immediate issues, while offloading "
+            "complex analysis to deep learning models."
+        ),
+    ]
+    content = "\n".join(content_lines) + "\n"
     try:
         with open(readme_path, "w") as f:
             f.write(content)
@@ -128,8 +146,8 @@ def phase_3_syntax(root_dir: Path):
     logger.info("🔍 PHASE 3: PRE-FLIGHT SYNTAX CHECK")
 
     playbooks = [
-        "K.A.O.S._BACKEND/ops/ansible/deploy_brain.yml",
-        "K.A.O.S._FRONTEND/ops/ansible/deploy_arm.yml",
+        "backend/ops/ansible/deploy_brain.yml",
+        "frontend/ops/ansible/deploy_arm.yml",
     ]
 
     for pb_rel in playbooks:

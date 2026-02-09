@@ -20,7 +20,10 @@ GPG_HOME = "/root/.gnupg"
 
 
 def create_backup(dev_mode=False):
-    """Creates a timestamped .tar.gz backup of the source directory (/opt/arm)."""
+    """Create a timestamped tar.gz backup of the source directory.
+
+    The archive is stored under BACKUP_DIR and will be signed.
+    """
     if not os.path.exists(BACKUP_DIR):
         os.makedirs(BACKUP_DIR)
 
@@ -28,7 +31,7 @@ def create_backup(dev_mode=False):
     filename = f"kaos_arm_backup_{timestamp}.tar.gz"
     filepath = os.path.join(BACKUP_DIR, filename)
 
-    print(f"Creating backup: {filepath}")
+    print("Creating backup: " + filepath)
 
     # Create the tarball archive
     with tarfile.open(filepath, "w:gz") as tar:
@@ -54,7 +57,7 @@ def sign_backup(filepath, dev_mode):
             print("CRITICAL: No GPG keys found! Cannot sign backup.")
             sys.exit(1)
 
-    print(f"Signing {filepath}...")
+    print("Signing " + filepath + "...")
     with open(filepath, "rb") as f:
         status = gpg.sign_file(f, detach=True, output=f"{filepath}.sig")
 
@@ -65,7 +68,9 @@ def sign_backup(filepath, dev_mode):
 
 
 def rotate_backups():
-    """Rotates backups, keeping only the last N files defined by MAX_BACKUPS."""
+    """Rotate backups, keeping only the last N files defined by
+    MAX_BACKUPS.
+    """
     print("Rotating backups...")
     # Find all tar.gz files
     files = glob.glob(os.path.join(BACKUP_DIR, "*.tar.gz"))
